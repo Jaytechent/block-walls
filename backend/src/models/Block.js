@@ -1,5 +1,13 @@
 const mongoose = require("mongoose");
 
+// The wall is useful as a self-contained visual demo too. When a Mongo URI is
+// not supplied, retain reservations in process memory instead of preventing the
+// API from starting. Production always uses MongoDB (see server.js).
+if (!process.env.MONGODB_URI) {
+  module.exports = require("./memoryBlockStore");
+  return;
+}
+
 /**
  * MongoDB is the fast-read index/cache for the wall UI. The blockchain
  * (per-chain BlockWall contract) is the final source of truth for

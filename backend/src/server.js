@@ -24,13 +24,18 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 const PORT = process.env.PORT || 4000;
 
 async function main() {
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log("Mongo connected");
+  const usingMemoryStore = !process.env.MONGODB_URI;
+  if (usingMemoryStore) {
+    console.warn("MONGODB_URI is not set; using the non-persistent in-memory demo store.");
+  } else {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("Mongo connected");
+  }
 
   startAllListeners();
   startSweeper();
 
-  app.listen(PORT, () => console.log(`Block Wall API listening on :${PORT}`));
+  app.listen(PORT, () => console.log(`Block Wall API listening on :${PORT}${usingMemoryStore ? " (demo mode)" : ""}`));
 }
 
 main().catch((err) => {

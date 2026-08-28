@@ -2,10 +2,13 @@ import { useEffect, useState, useCallback } from "react";
 import WallCanvas, { BlockState, TOTAL_BLOCKS } from "../components/WallCanvas";
 import ClaimDrawer from "../components/ClaimDrawer";
 import { api } from "../lib/api";
+import { SAMPLE_WALL_BLOCKS, SAMPLE_WALL_STATS } from "../lib/sampleWall";
 
 export default function WallPage() {
-  const [blocks, setBlocks] = useState<Map<number, BlockState>>(new Map());
-  const [stats, setStats] = useState({ claimed: 0, total: TOTAL_BLOCKS, pctClaimed: 0 });
+  // Seed the landing wall with an art-directed, deterministic mock-up. Live
+  // API records replace these blocks as soon as they are available.
+  const [blocks, setBlocks] = useState<Map<number, BlockState>>(() => new Map(SAMPLE_WALL_BLOCKS));
+  const [stats, setStats] = useState(SAMPLE_WALL_STATS);
   const [hovered, setHovered] = useState<number | null>(null);
   const [selected, setSelected] = useState<{ blockId: number; x: number; y: number } | null>(null);
   const [showHero, setShowHero] = useState(true);
@@ -17,7 +20,7 @@ export default function WallPage() {
     ]);
 
     if (blocksResult.status === "fulfilled") {
-      const m = new Map<number, BlockState>();
+      const m = new Map<number, BlockState>(SAMPLE_WALL_BLOCKS);
       for (const b of blocksResult.value.blocks) {
         m.set(b.blockId, {
           blockId: b.blockId,
@@ -30,7 +33,7 @@ export default function WallPage() {
     }
 
     if (statsResult.status === "fulfilled") {
-      setStats(statsResult.value);
+      setStats(statsResult.value.claimed ? statsResult.value : SAMPLE_WALL_STATS);
     }
   }, []);
 
