@@ -31,7 +31,7 @@ type Props = {
 export default function WallCanvas({ blocks, onSelectBlock, hoveredBlockId, onHoverBlock }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgCache = useRef(new Map<string, HTMLImageElement>());
-  const [view, setView] = useState({ offsetX: -((GRID_W * BASE_CELL) / 2), offsetY: -((GRID_H * BASE_CELL) / 2), zoom: 1 });
+  const [view, setView] = useState({ offsetX: (GRID_W * BASE_CELL) / 2, offsetY: (GRID_H * BASE_CELL) / 2, zoom: 0.2 });
   const dragState = useRef<{ dragging: boolean; lastX: number; lastY: number; totalMove: number }>({
     dragging: false,
     lastX: 0,
@@ -46,7 +46,7 @@ export default function WallCanvas({ blocks, onSelectBlock, hoveredBlockId, onHo
     if (!ctx) return;
 
     const { width, height } = canvas;
-    ctx.fillStyle = "#0A0B0C";
+    ctx.fillStyle = "#08090A";
     ctx.fillRect(0, 0, width, height);
 
     const cell = BASE_CELL * view.zoom;
@@ -69,11 +69,11 @@ export default function WallCanvas({ blocks, onSelectBlock, hoveredBlockId, onHo
         const state = blocks.get(blockId);
 
         if (!state || state.status === "AVAILABLE") {
-          ctx.fillStyle = "#141517";
+          ctx.fillStyle = "#121416";
         } else if (state.status === "RESERVED" || state.status === "PAYMENT_PENDING") {
           ctx.fillStyle = "#3A2B0F";
         } else if (state.status === "CLAIMED") {
-          ctx.fillStyle = "#1E1F22";
+          ctx.fillStyle = state.previewColor || "#1E1F22";
         } else {
           ctx.fillStyle = "#141517";
         }
@@ -152,7 +152,7 @@ export default function WallCanvas({ blocks, onSelectBlock, hoveredBlockId, onHo
   const onWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const factor = e.deltaY < 0 ? 1.1 : 0.9;
-    setView((v) => ({ ...v, zoom: Math.min(24, Math.max(0.3, v.zoom * factor)) }));
+    setView((v) => ({ ...v, zoom: Math.min(24, Math.max(0.12, v.zoom * factor)) }));
   };
 
   const onPointerDown = (e: React.PointerEvent) => {
