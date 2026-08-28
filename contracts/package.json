@@ -1,0 +1,24 @@
+{
+  "name": "block-wall-contracts",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:robinhood": "hardhat run scripts/deploy.js --network robinhoodChain",
+    "deploy:base": "hardhat run scripts/deploy.js --network base",
+    "deploy:arbitrum": "hardhat run scripts/deploy.js --network arbitrum",
+    "deploy:optimism": "hardhat run scripts/deploy.js --network optimism",
+    "deploy:bsc": "hardhat run scripts/deploy.js --network bsc",
+    "deploy:polygon": "hardhat run scripts/deploy.js --network polygon",
+    "deploy:all": "for n in robinhoodChain base arbitrum optimism bsc polygon; do hardhat run scripts/deploy.js --network $n; done"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.0",
+    "dotenv": "^16.4.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  }
+}
